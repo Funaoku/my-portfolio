@@ -16,37 +16,61 @@ interface ButtonInfo {
   colSpan?: number;
 }
 
+// 演算子の対応表
+const operatorMap: { [key: string]: string } = {
+  '/': '÷',
+  '*': '×',
+  '-': '-',
+  '+': '+'
+};
+
 const Calculator = () => {
   const [display, setDisplay] = useState('0');
   const [equation, setEquation] = useState('');
   const [isNewNumber, setIsNewNumber] = useState(true);
+  const [lastResult, setLastResult] = useState('');
 
   const handleNumber = (num: string) => {
     if (isNewNumber) {
-      // 新しい数字を表示
       setDisplay(num);
       setIsNewNumber(false);
     } else {
-      // 既存の数字に新しい数字を追加
       setDisplay(display + num);
     }
   };
 
   const handleOperator = (operator: string) => {
-    setEquation(display + ' ' + operator + ' ');
-    setIsNewNumber(true); // 新しい数字を入力するためのフラグをセット
+    if (lastResult) {
+      setEquation(lastResult + ' ' + operatorMap[operator] + ' ');
+      setLastResult('');
+    } else {
+      setEquation(equation + display + ' ' + operatorMap[operator] + ' ');
+    }
+    setIsNewNumber(true);
   };
 
   const handleEqual = () => {
+    if (!equation) {
+      return;
+    }
+    
     try {
-      const result = eval(equation + display);
+      const calcExpression = (equation + display)
+        .replace(/÷/g, '/')
+        .replace(/×/g, '*')
+        .replace(/\s+/g, '');
+      
+      const result = eval(calcExpression);
+      
       setDisplay(result.toString());
-      setEquation('');
+      setLastResult(result.toString());
+      setEquation(equation + display + ' = ');
       setIsNewNumber(true);
     } catch (error) {
       console.error('計算エラー:', error);
       setDisplay('エラー');
       setEquation('');
+      setLastResult('');
       setIsNewNumber(true);
     }
   };
@@ -54,6 +78,7 @@ const Calculator = () => {
   const handleClear = () => {
     setDisplay('0');
     setEquation('');
+    setLastResult('');
     setIsNewNumber(true);
   };
 
