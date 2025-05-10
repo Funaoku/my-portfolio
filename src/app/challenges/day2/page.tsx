@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Header from '@/components/Header';
 
 const Day2Page = () => {
   const [count, setCount] = useState(0);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
+      <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <Link href="/challenges" className="inline-block mb-8 text-gray-600 dark:text-gray-300 hover:underline">
           ← チャレンジ一覧に戻る
