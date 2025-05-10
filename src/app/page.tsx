@@ -26,9 +26,15 @@ export default function Home() {
             </p>
             <a
               href="#contact"
-              className="inline-block bg-black text-white dark:bg-white dark:text-black px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity"
+              className="inline-block bg-black text-white dark:bg-white dark:text-black px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity mr-4"
             >
               Get in Touch
+            </a>
+            <a
+              href="/challenges"
+              className="inline-block bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity"
+            >
+              100 Days Challenge
             </a>
           </div>
         </section>
