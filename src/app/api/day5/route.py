@@ -17,27 +17,35 @@ def calculate(numbers: list) -> Dict[str, float]:
     
     return result
 
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        # リクエストの長さを取得
-        content_length = int(self.headers['Content-Length'])
-        # リクエストボディを読み込み
-        post_data = self.rfile.read(content_length)
-        # JSONをパース
-        data = json.loads(post_data.decode('utf-8'))
-        
+def handler(request):
+    if request.method == 'POST':
         try:
+            # リクエストボディを読み込み
+            data = json.loads(request.body)
+            
             # 計算を実行
             result = calculate(data['numbers'])
             
-            # レスポンスを返す
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({'result': result}).encode())
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': json.dumps({'result': result})
+            }
         except Exception as e:
-            # エラーレスポンスを返す
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({'error': str(e)}).encode()) 
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json'
+                },
+                'body': json.dumps({'error': str(e)})
+            }
+    
+    return {
+        'statusCode': 405,
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        'body': json.dumps({'error': 'Method not allowed'})
+    } 

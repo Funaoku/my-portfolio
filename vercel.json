@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "functions": {
     "src/app/api/day5/route.py": {
       "runtime": "python3.9"
@@ -8,6 +9,20 @@
     {
       "src": "src/app/api/day5/route.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/day5",
+      "dest": "src/app/api/day5/route.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 } 
