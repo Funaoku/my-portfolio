@@ -5,15 +5,5 @@
       "src": "package.json",
       "use": "@vercel/next"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/day5",
-      "dest": "/src/app/api/day5/route.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
   ]
 } 

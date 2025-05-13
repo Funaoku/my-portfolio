@@ -28,7 +28,7 @@ export default function CalculatePage() {
       const numberArray = numbers.split(',').map(n => parseFloat(n.trim()));
 
       // Python APIサーバーにリクエストを送信
-      const response = await fetch('https://numpy-calculator-api.onrender.com/calculate', {
+      const response = await fetch('https://my-portfolio-a30e.onrender.com/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
