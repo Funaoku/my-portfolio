@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "src/app/api/day5/route.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.9"
+      }
     },
     {
       "src": "package.json",
@@ -14,6 +17,10 @@
     {
       "src": "/api/day5",
       "dest": "/src/app/api/day5/route.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 } 
