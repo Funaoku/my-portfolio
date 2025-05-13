@@ -26,9 +26,10 @@ app.include_router(calculator.router, tags=["calculator"])
 async def root():
     return {"message": "API is running"} 
 
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
+@app.head("/health")
+async def health_head():
+    # HEADリクエストには本文なしでステータスコードのみ返す
+    return None
 
 if __name__ == "__main__":
     import uvicorn
