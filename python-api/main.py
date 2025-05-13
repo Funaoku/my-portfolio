@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 # ルーターの登録
-app.include_router(calculator.router, prefix="/api/v1/calculator", tags=["calculator"])
+app.include_router(calculator.router, tags=["calculator"])
 
 @app.get("/")
 async def root():
