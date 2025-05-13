@@ -6,10 +6,15 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+ALLOWED_ORIGINS = [
+    "https://my-portfolio-funaokus-projects.vercel.app",  # 本番環境のURL
+    "http://localhost:3000"  # ローカル開発環境
+]
+
 # CORSの設定
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 本番環境では適切なオリジンを指定してください
+    allow_origins=ALLOWED_ORIGINS,  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
