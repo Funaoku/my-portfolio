@@ -27,7 +27,8 @@ export default function CalculatePage() {
       // 入力された文字列を数値の配列に変換
       const numberArray = numbers.split(',').map(n => parseFloat(n.trim()));
 
-      const response = await fetch('/api/day5', {
+      // Python APIサーバーにリクエストを送信
+      const response = await fetch('https://your-python-api.onrender.com/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +39,7 @@ export default function CalculatePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || '計算中にエラーが発生しました');
+        throw new Error(data.detail || '計算中にエラーが発生しました');
       }
 
       setResult(data.result);
