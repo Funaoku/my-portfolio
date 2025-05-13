@@ -24,3 +24,11 @@ app.include_router(calculator.router, tags=["calculator"])
 @app.get("/")
 async def root():
     return {"message": "API is running"} 
+
+import os
+
+if __name__ == "__main__":
+    import uvicorn
+    # Renderが提供するPORT環境変数を使用
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
