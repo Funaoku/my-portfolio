@@ -26,7 +26,9 @@ app.include_router(calculator.router, tags=["calculator"])
 async def root():
     return {"message": "API is running"} 
 
-import os
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     import uvicorn
