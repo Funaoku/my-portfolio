@@ -18,6 +18,22 @@ def calculate(numbers: list) -> Dict[str, float]:
     return result
 
 def handler(request):
+    # CORSヘッダーを設定
+    headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Content-Type': 'application/json'
+    }
+
+    # OPTIONSリクエストの処理
+    if request.method == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': ''
+        }
+
     if request.method == 'POST':
         try:
             # リクエストボディを読み込み
@@ -28,24 +44,18 @@ def handler(request):
             
             return {
                 'statusCode': 200,
-                'headers': {
-                    'Content-Type': 'application/json'
-                },
+                'headers': headers,
                 'body': json.dumps({'result': result})
             }
         except Exception as e:
             return {
                 'statusCode': 500,
-                'headers': {
-                    'Content-Type': 'application/json'
-                },
+                'headers': headers,
                 'body': json.dumps({'error': str(e)})
             }
     
     return {
         'statusCode': 405,
-        'headers': {
-            'Content-Type': 'application/json'
-        },
+        'headers': headers,
         'body': json.dumps({'error': 'Method not allowed'})
     } 
