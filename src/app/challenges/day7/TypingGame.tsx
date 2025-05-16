@@ -1,8 +1,7 @@
 /* app/challenges/day7/TypingGame.tsx */
 "use client";
 
-import BackLink from "@/components/BackLink";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { texts } from "./sample";
 
 type Phase = "ready" | "playing" | "finished";
@@ -27,7 +26,7 @@ export default function TypingGame() {
     }
   };
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     setPhase("finished");
 
@@ -35,7 +34,7 @@ export default function TypingGame() {
     const minutes = seconds / 60;
     const wpmVal  = minutes > 0 ? words / minutes : 0;
     setWpm(Math.round(wpmVal));
-  };
+  }, [input, seconds]);
 
   const reset = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -51,7 +50,7 @@ export default function TypingGame() {
     if (phase === "playing" && (seconds >= 60 || input === target)) {
       finish();
     }
-  }, [phase, seconds, input, target]);
+  }, [phase, seconds, input, target, finish]);
 
   /* ---------- UI ---------- */
   return (
