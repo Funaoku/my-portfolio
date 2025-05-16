@@ -1,78 +1,117 @@
+/* app/challenges/day7/TypingGame.tsx */
 "use client";
-import { useState } from "react";
+
+import BackLink from "@/components/BackLink";
+import { useState, useRef, useEffect } from "react";
 import { texts } from "./sample";
-import { useRef } from "react";
-import { useEffect } from "react";
+
+type Phase = "ready" | "playing" | "finished";
+type TimerID = ReturnType<typeof setInterval> | null;
+
 export default function TypingGame() {
-    const [target, setTarget] = useState<string>(() => texts[0]);
-    const [input, setInput] =useState("");
-    const [phase, setPhase] = useState<"ready" | "playing" | "finished">("ready");
-    const [seconds, setSeconds] = useState(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
-    const [wpm, setWpm] = useState(0);
-    
+  /* ---------- state & refs ---------- */
+  const [target,  setTarget]  = useState<string>(texts[0]);
+  const [input,   setInput]   = useState("");
+  const [phase,   setPhase]   = useState<Phase>("ready");
+  const [seconds, setSeconds] = useState(0);          // 0.1 秒刻み
+  const [wpm,     setWpm]     = useState<number>();
+  const timerRef              = useRef<TimerID>(null);
 
-    const handleKeyDown = () => {
-        if (phase === "ready") {
-            setPhase("playing");
-            timerRef.current = setInterval(() => {
-                setSeconds((s) => +(s + 0.1).toFixed(1));
-            },100);
-            //setInterval(fn, 1000) → 1000 ミリ秒ごとに fn を無限に呼び続ける
-            //JavaScript のタイマーは OS やブラウザの負荷で数 ms〜十数 ms 遅れることがあるので、toFixed(1) → 小数点第1位までの数値を文字列に変換
-            //先頭の + は 単項プラス演算子で、文字列を即座に数値へ変換
-        }
+  /* ---------- handlers ---------- */
+  const handleKeyDown = () => {
+    if (phase === "ready") {
+      setPhase("playing");
+      timerRef.current = setInterval(() => {
+        setSeconds((s) => +(s + 0.1).toFixed(1));
+      }, 100);
     }
+  };
 
-    const finish = () => {
-        clearInterval(timerRef.current!);
-        setPhase("finished");
-        
-        const wordsTyped = input.trim().split(" ").length;
-        const minutes = seconds / 60;
-        setWpm(Math.round(wordsTyped / minutes || 0));
+  const finish = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setPhase("finished");
+
+    const words   = input.trim().split(/\s+/).filter(Boolean).length;
+    const minutes = seconds / 60;
+    const wpmVal  = minutes > 0 ? words / minutes : 0;
+    setWpm(Math.round(wpmVal));
+  };
+
+  const reset = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setPhase("ready");
+    setInput("");
+    setSeconds(0);
+    setWpm(undefined);
+    setTarget(texts[Math.floor(Math.random() * texts.length)]);
+  };
+
+  /* ---------- 自動終了 ---------- */
+  useEffect(() => {
+    if (phase === "playing" && (seconds >= 60 || input === target)) {
+      finish();
     }
-    const reset = () => {
-        clearInterval(timerRef.current!);
-        setPhase("ready");
-        setInput("");
-        setSeconds(0);
-        setWpm(0);
-        setTarget(texts[Math.floor(Math.random() * texts.length)]);
-    }
+  }, [phase, seconds, input, target]);
 
-    useEffect(() => {
-        if (phase === "playing" && seconds >= 60){
-            clearInterval(timerRef.current!);
-            setPhase("finished");
-        }
-        if (phase === "playing" && input === target){
-            finish();
-        }
-    },[phase, seconds,input, target]);
-    //依存配列に指定した値が 変わったときだけ effectFn が再実行される（※ 初回マウント時は必ず 1 回実行）
+  /* ---------- UI ---------- */
+  return (
+    <div className="flex flex-col items-center justify-center">
+      {/* カード */}
+      <div className="w-full max-w-lg px-4 sm:px-8 py-8 bg-white dark:bg-slate-700 rounded-2xl shadow-2xl hover:shadow-amber-400/40 transition-shadow">
+        <h1 className="text-2xl font-bold text-center mb-6">
+          Typing Speed Test
+        </h1>
 
-    return (
-        <div className="w-full max-w-lg p-6 border rounded-xl">
-            <h1 className="text-xl font-bold mb-4">Typing Speed Test</h1>
-            <p className="mb-4">{target}</p>
-            <textarea
-                className="w-full h-32 p-4 border rounded-lg"
-                value={input}
-                onKeyDown = {handleKeyDown}
-                onChange = {(e) => setInput(e.target.value)}
-                placeholder="Start typing here..."
-            />
-            
-            <button onClick={reset} className="mt-6 w-full py-2 bg-amber-500 text-white rounded-xl">
-                {phase === "finished" ? "Try Again" : "Reset"}
-            </button>
-            <div className="mt-4 flex justify-between text-sm">
-                <span>Time: {seconds}s</span>
-                <span>WPM: {wpm ?? "-"}</span>
-            </div>
+        {/* お題文 */}
+        <p className="mb-4 leading-relaxed break-all select-none">
+          {target.split("").map((ch, i) =>
+            i < input.length ? (
+              <span
+                key={i}
+                className={input[i] === ch ? "text-emerald-500" : "text-red-500"}
+              >
+                {ch}
+              </span>
+            ) : (
+              <span key={i} className="text-gray-400 opacity-50">
+                {ch}
+              </span>
+            )
+          )}
+        </p>
+
+        {/* 進捗バー */}
+        <div className="h-2 mb-4 bg-gray-200 rounded-full">
+          <div
+            style={{ width: `${(input.length / target.length) * 100}%` }}
+            className="h-full bg-emerald-400 rounded-full transition-all"
+          />
         </div>
-        
 
-    )
+        {/* 入力欄 */}
+        <textarea
+          className="w-full h-32 p-4 border rounded-lg focus:ring-2 focus:ring-emerald-400 dark:bg-slate-800"
+          placeholder="Start typing here..."
+          value={input}
+          disabled={phase === "finished"}
+          onKeyDown={handleKeyDown}
+          onChange={(e) => setInput(e.target.value)}
+        />
+
+        {/* ステータス */}
+        <div className="mt-4 flex justify-between text-sm">
+          <span>Time: {seconds}s</span>
+          <span>WPM: {wpm ?? "-"}</span>
+        </div>
+
+        {/* リセット / 再挑戦 */}
+        <button
+          onClick={reset}
+          className="mt-6 w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition"
+        >
+          {phase === "finished" ? "Try Again" : "Reset"}
+        </button>
+      </div>
+    </div>
+  );
 }
