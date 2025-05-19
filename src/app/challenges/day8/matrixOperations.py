@@ -1,46 +1,32 @@
-import numpy as np
-import json
 import sys
-from typing import Union, List, Tuple
+import json
+import numpy as np
 
-def calculate_matrix(
-    matrix_a: List[List[float]],
-    matrix_b: List[List[float]],
-    operation: str
-) -> Union[List[List[float]], float]:
-    """
-    行列演算を行う関数
-    
-    Args:
-        matrix_a: 行列A
-        matrix_b: 行列B
-        operation: 演算の種類 ("add", "multiply", "transpose", "determinant", "inverse")
-    
-    Returns:
-        演算結果（行列またはスカラー値）
-    """
-    a = np.array(matrix_a)
-    b = np.array(matrix_b)
-    
+def calculate_matrix_operations(matrix_a, matrix_b, operation):
     try:
+        # NumPy配列に変換
+        a = np.array(matrix_a)
+        b = np.array(matrix_b)
+
+        result = None
         if operation == "add":
-            return (a + b).tolist()
+            result = a + b
+        elif operation == "subtract":
+            result = a - b
         elif operation == "multiply":
-            return (a @ b).tolist()
-        elif operation == "transpose":
-            return a.T.tolist()
-        elif operation == "determinant":
-            return float(np.linalg.det(a))
-        elif operation == "inverse":
-            return np.linalg.inv(a).tolist()
+            result = a * b
+        elif operation == "dot":
+            result = np.dot(a, b)
         else:
-            raise ValueError(f"Unknown operation: {operation}")
-    except np.linalg.LinAlgError as e:
-        raise ValueError(f"Matrix operation failed: {str(e)}")
+            return {"error": "無効な演算です"}
+
+        return {"result": result.tolist()}
+    except Exception as e:
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print(json.dumps({"error": "Invalid number of arguments"}))
+        print(json.dumps({"error": "引数の数が不正です"}))
         sys.exit(1)
 
     try:
@@ -48,7 +34,7 @@ if __name__ == "__main__":
         matrix_b = json.loads(sys.argv[2])
         operation = sys.argv[3]
 
-        result = calculate_matrix(matrix_a, matrix_b, operation)
+        result = calculate_matrix_operations(matrix_a, matrix_b, operation)
         print(json.dumps(result))
     except Exception as e:
         print(json.dumps({"error": str(e)}))
