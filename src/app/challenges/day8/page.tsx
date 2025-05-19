@@ -14,8 +14,8 @@ export default function Day8() {
   const [matrixB, setMatrixB] = useState<string>("[[5,6],[7,8]]");
   const [operation, setOperation] = useState<string>("add");
   const [result, setResult] = useState<MatrixResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export default function Day8() {
       const matrixAArray = JSON.parse(matrixA);
       const matrixBArray = JSON.parse(matrixB);
 
-      const response = await fetch("/api/day8", {
+      const response = await fetch("https://my-portfolio-a30e.onrender.com/matrix", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,17 +42,12 @@ export default function Day8() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "計算中にエラーが発生しました");
-        return;
+        throw new Error(data.detail || "計算中にエラーが発生しました");
       }
 
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setResult(data);
-      }
+      setResult(data.result);
     } catch (err) {
-      setError("入力データの形式が正しくありません");
+      setError(err instanceof Error ? err.message : "予期せぬエラーが発生しました");
     } finally {
       setIsLoading(false);
     }
@@ -64,17 +59,25 @@ export default function Day8() {
       <main className="pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="flex items-center gap-4 mb-8">
-            <Link href="/challenges" className="text-gray-600 dark:text-gray-300 hover:underline">
+            <Link 
+              href="/challenges" 
+              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
               ← チャレンジ一覧に戻る
             </Link>
           </div>
           <div className="max-w-md mx-auto">
-            <h1 className="text-4xl font-bold text-center mb-8">行列計算機</h1>
+            <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+              行列計算機
+            </h1>
             
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="matrixA" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label 
+                    htmlFor="matrixA" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     行列A（JSON形式）
                   </label>
                   <input
@@ -82,13 +85,17 @@ export default function Day8() {
                     id="matrixA"
                     value={matrixA}
                     onChange={(e) => setMatrixA(e.target.value)}
-                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="例: [[1,2],[3,4]]"
+                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="matrixB" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label 
+                    htmlFor="matrixB" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     行列B（JSON形式）
                   </label>
                   <input
@@ -96,20 +103,24 @@ export default function Day8() {
                     id="matrixB"
                     value={matrixB}
                     onChange={(e) => setMatrixB(e.target.value)}
-                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="例: [[5,6],[7,8]]"
+                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="operation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label 
+                    htmlFor="operation" 
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     演算
                   </label>
                   <select
                     id="operation"
                     value={operation}
                     onChange={(e) => setOperation(e.target.value)}
-                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                   >
                     <option value="add">加算 (A + B)</option>
                     <option value="subtract">減算 (A - B)</option>
@@ -139,7 +150,7 @@ export default function Day8() {
                     計算結果
                   </h2>
                   <pre className="bg-white dark:bg-gray-800 p-4 rounded-md overflow-x-auto">
-                    {JSON.stringify(result.result, null, 2)}
+                    {JSON.stringify(result, null, 2)}
                   </pre>
                 </div>
               )}

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import calculator
+from routers import calculator, matrix
 import os
 
 app = FastAPI()
@@ -21,6 +21,7 @@ app.add_middleware(
 
 # ルーターの登録
 app.include_router(calculator.router, tags=["calculator"])
+app.include_router(matrix.router, tags=["matrix"])
 
 @app.get("/")
 async def root():
