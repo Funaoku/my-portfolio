@@ -38,8 +38,7 @@ export default function Auth() {
         });
         
         if (error) throw error;
-        if (!user) throw new Error('ユーザー情報の取得に失敗しました');
-        setMessage(`${user.email}でログインしました！`);
+        setMessage(`${user?.email}でログインしました！`);
       }
     } catch (error: unknown) {
       setMessage(error instanceof Error ? error.message : 'エラーが発生しました');
