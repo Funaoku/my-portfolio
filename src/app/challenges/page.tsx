@@ -47,6 +47,10 @@ const ChallengesPage = () => (
             <h2 className="text-xl font-semibold mb-2">Day  8</h2>
             <p className="text-gray-600 dark:text-gray-300">二次元配列計算機</p>
           </Link>
+          <Link href="/challenges/day9" className="block p-6 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <h2 className="text-xl font-semibold mb-2">Day  9</h2>
+            <p className="text-gray-600 dark:text-gray-300">Supabase 認証</p>
+          </Link>
           {/* 今後追加されるチャレンジのリンク */}
         </div>
       </div>
