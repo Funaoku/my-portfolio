@@ -19,7 +19,7 @@ const About = () => {
               
               <div className="border-l-4 border-green-500 pl-4">
                 <h4 className="font-semibold text-gray-800">就職</h4>
-                <p className="text-gray-600">2026年4月から IT企業に新卒入社予定</p>
+                <p className="text-gray-600">2026年4月から 社内SEとして新卒入社予定</p>
               </div>
               
               <div className="border-l-4 border-purple-500 pl-4">
