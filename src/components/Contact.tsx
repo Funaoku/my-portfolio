@@ -18,8 +18,8 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // ここにフォーム送信ロジックを追加
     console.log('Form submitted:', formData)
+    alert('フォームが送信されました（テスト）')
   }
 
   return (
@@ -28,6 +28,7 @@ const Contact = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
           Contact
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -83,14 +84,15 @@ const Contact = () => {
           <p className="text-gray-400">
             または、直接メールでお問い合わせください
           </p>
-          <a
-            href="mailto:your-email@example.com"
-            className="text-white hover:text-gray-300 transition-colors duration-300 mt-2 inline-block"
-          >
-            your-email@example.com
-          </a>
+          
+            <a
+              href="mailto:your-email@example.com"
+              className="text-white hover:text-gray-300 transition-colors duration-300 mt-2 inline-block"
+            >
+              your-email@example.com
+            </a>
+          </div>
         </div>
-      </div>
     </section>
   )
 }
