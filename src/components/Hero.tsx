@@ -37,7 +37,7 @@ const Hero = () => {
 
     const timer = setTimeout(handleTyping, typingSpeed)
     return () => clearTimeout(timer)
-  }, [text, isDeleting, loopNum, typingSpeed])
+  }, [text, isDeleting, loopNum, typingSpeed,textArray])
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-gray-50">

@@ -9,18 +9,31 @@ const Contact = () => {
     message: ''
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+ 
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // ここにフォーム送信ロジックを追加
-    console.log('Form submitted:', formData)
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Failed');
+
+     
+      setFormData({ name: '', email: '', message: '' }); // フォームをクリア
+    } catch (err) {
+      console.error(err);
+      
+    }
+  };
 
   return (
     <section id="contact" className="py-20 bg-gray-900 text-white">
@@ -28,6 +41,7 @@ const Contact = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
           Contact
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-2">
@@ -78,8 +92,6 @@ const Contact = () => {
             Send Message
           </button>
         </form>
-        
-        
       </div>
     </section>
   )
