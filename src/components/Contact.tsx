@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'; 
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +9,8 @@ const Contact = () => {
     email: '',
     message: ''
   })
-
+  const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState(false);
  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -24,14 +26,16 @@ const Contact = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       if (!res.ok) throw new Error('Failed');
 
-     
-      setFormData({ name: '', email: '', message: '' }); // フォームをクリア
+      /** ③ 成功表示 → 2 秒後にトップへ */
+      setIsSuccess(true);
+      setFormData({ name: '', email: '', message: '' }); // 入力もクリア
+
+      setTimeout(() => router.push('/#home'), 2000);
     } catch (err) {
       console.error(err);
-      
+      alert('送信に失敗しました。時間をおいてお試しください。');
     }
   };
 
@@ -41,7 +45,11 @@ const Contact = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
           Contact
         </h2>
-
+        {isSuccess && (
+          <p className="mb-6 text-center text-green-400 font-semibold">
+            送信しました！ホームに戻ります…
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-2">
