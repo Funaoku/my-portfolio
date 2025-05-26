@@ -92,20 +92,7 @@ const Contact = () => {
             Send Message
           </button>
         </form>
-        
-        <div className="mt-12 text-center">
-          <p className="text-gray-400">
-            または、直接メールでお問い合わせください
-          </p>
-          
-            <a
-              href="mailto:your-email@example.com"
-              className="text-white hover:text-gray-300 transition-colors duration-300 mt-2 inline-block"
-            >
-              your-email@example.com
-            </a>
-          </div>
-        </div>
+      </div>
     </section>
   )
 }
