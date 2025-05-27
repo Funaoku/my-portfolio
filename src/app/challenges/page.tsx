@@ -59,6 +59,10 @@ const ChallengesPage = () => (
             <h2 className="text-xl font-semibold mb-2">Day  11</h2>
             <p className="text-gray-600 dark:text-gray-300">Contact ホーム</p>
           </Link>
+          <Link href="/challenges/day12" className="block p-6 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <h2 className="text-xl font-semibold mb-2">Day  12</h2>
+            <p className="text-gray-600 dark:text-gray-300">ToDo 追加機能、削除機能</p>
+          </Link>
           {/* 今後追加されるチャレンジのリンク */}
         </div>
       </div>
