@@ -8,10 +8,8 @@ const uuidRegex =
 // ---------------------------------------------------------------- //
 // GET: 個別 Todo 取得
 // ---------------------------------------------------------------- //
-export async function GET(
-  _req: Request,
-  { params }: { params: any }        // ← ★型を付けない（or any）
-) {
+export async function GET(_req: Request, props: { params: Promise<{ id :string}> }) {
+  const params = await props.params;
   const { id } = params
   if (!uuidRegex.test(id)) {
     return NextResponse.json({ error: '無効な ID' }, { status: 400 })
@@ -33,10 +31,8 @@ export async function GET(
 // ---------------------------------------------------------------- //
 // PUT: 更新
 // ---------------------------------------------------------------- //
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params
   if (!uuidRegex.test(id)) {
     return NextResponse.json({ error: '無効なTodo IDです' }, { status: 400 })
@@ -74,10 +70,8 @@ export async function PUT(
 // ---------------------------------------------------------------- //
 // DELETE: 削除
 // ---------------------------------------------------------------- //
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params
   if (!uuidRegex.test(id)) {
     return NextResponse.json({ error: '無効なTodo IDです' }, { status: 400 })
