@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabaseServer';
+import { supabase } from '@/lib/supabaseBrowser';
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
