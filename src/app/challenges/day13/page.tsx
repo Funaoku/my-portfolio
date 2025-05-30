@@ -5,21 +5,19 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import { Plus, Trash2, Check } from 'lucide-react';
 
-// Todo型の定義（Day 12と互換性を保つ）
+// Todo型の定義
 interface Todo {
   id: string;
-  text: string;  // title のエイリアス
-  title?: string; // 実際のデータベースフィールド
+  text: string;
   completed: boolean;
   created_at: string;
-  priority?: number;
 }
 
 interface TodoStats {
   total: number;
   completed: number;
   remaining: number;
-  highPriority?: number;
+  completionRate?: number;
 }
 
 export default function Day13() {
@@ -102,8 +100,7 @@ export default function Day13() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: newTodo.trim(), // Day 12との互換性
-          priority: 3 // デフォルト優先度
+          text: newTodo.trim() // Day 12との互換性
         }),
       });
 
@@ -268,11 +265,8 @@ export default function Day13() {
           {/* ヘッダー */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              📝 Todo App (生SQL版)
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Day 13: PostgreSQL + 生SQL でCRUD操作
-            </p>
+              📝 Todo App (Supabase版)
+            </h1>            
           </div>
 
           {/* エラー表示 */}
@@ -380,16 +374,9 @@ export default function Day13() {
                       >
                         {todo.text}
                       </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className="text-xs text-gray-400 dark:text-gray-500">
-                          {new Date(todo.created_at).toLocaleString('ja-JP')}
-                        </p>
-                        {todo.priority && todo.priority > 3 && (
-                          <span className="text-xs bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 px-2 py-1 rounded">
-                            優先度{todo.priority}
-                          </span>
-                        )}
-                      </div>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                        {new Date(todo.created_at).toLocaleString('ja-JP')}
+                      </p>
                     </div>
 
                     {/* 削除ボタン */}
@@ -408,11 +395,10 @@ export default function Day13() {
           {/* フッター */}
           {todos.length > 0 && (
             <div className="mt-8 text-center text-gray-500 dark:text-gray-400 text-sm space-y-2">
-              <p>💡 ヒント: チェックボックスをクリックして完了状態を切り替えられます</p>
-              <p>🛢️ PostgreSQL + 生SQL でデータを管理しています</p>
-              {stats.highPriority && stats.highPriority > 0 && (
-                <p className="text-orange-600 dark:text-orange-400">
-                  ⚠️ 優先度の高いタスクが{stats.highPriority}件あります
+              <p>チェックボックスをクリックして完了状態を切り替えられます</p>              
+              {stats.completionRate !== undefined && stats.completionRate > 0 && (
+                <p className="text-green-600 dark:text-green-400">
+                  📊 完了率: {stats.completionRate}%
                 </p>
               )}
             </div>

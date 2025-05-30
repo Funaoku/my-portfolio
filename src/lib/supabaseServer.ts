@@ -1,60 +1,28 @@
 // src/lib/supabaseServer.ts
-// サーバーサイド用のSupabaseクライアント（生SQL実行用）
+//-------------------------------------------------------------
+// Supabase サーバーサイド専用クライアント（最小構成）
+//-------------------------------------------------------------
 
 import { createClient } from '@supabase/supabase-js'
 
-// 環境変数の確認
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY // 重要: Service Role Key
+// ① .env.local に必須の環境変数を用意する
+// NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxx.supabase.co
+// SUPABASE_SERVICE_ROLE_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL
+const serviceKey   = process.env.SUPABASE_SERVICE_ROLE_KEY   // ← ★クライアント側に絶対出さない
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Supabase環境変数が設定されていません')
+// ② 環境変数チェック（ないときは即エラー）
+if (!supabaseUrl || !serviceKey) {
+  throw new Error(
+    'Supabase の URL または Service Role Key が設定されていません。' +
+    'env ファイル (.env.local など) を確認してください。'
+  )
 }
 
-// サーバーサイド専用クライアント（生SQL実行可能）
-export const supabaseServer = createClient(supabaseUrl, supabaseServiceKey, {
+// ③ createClient して export ― これだけで OK
+export const supabaseServer = createClient(supabaseUrl, serviceKey, {
   auth: {
-    autoRefreshToken: false,
-    persistSession: false
+    autoRefreshToken: false, // API なのでリフレッシュ不要
+    persistSession : false   // Cookie も不要
   }
 })
-
-// 生SQL実行のヘルパー関数
-export async function executeSQL(query: string, params?: any[]) {
-  try {
-    const { data, error } = await supabaseServer.rpc('execute_sql', {
-      query,
-      params: params || []
-    })
-    
-    if (error) {
-      console.error('SQL実行エラー:', error)
-      throw error
-    }
-    
-    return data
-  } catch (err) {
-    console.error('SQL実行失敗:', err)
-    throw err
-  }
-}
-
-// PostgreSQL直接接続用（より柔軟な生SQL実行）
-export async function executePgSQL(query: string, params?: any[]) {
-  try {
-    // Supabaseの場合、rpc関数を使って生SQLを実行
-    const { data, error } = await supabaseServer
-      .from('todos') // ダミーテーブル名（実際はrpc関数を使用）
-      .select()
-      .limit(0) // 実際のデータは不要
-    
-    // 直接SQLを実行したい場合は、Supabaseのpostgrest-jsではなく
-    // node-postgresやpgライブラリを使用することを推奨
-    
-    if (error) throw error
-    return data
-  } catch (err) {
-    console.error('PostgreSQL実行エラー:', err)
-    throw err
-  }
-}
